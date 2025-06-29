@@ -4,7 +4,7 @@ import NearbySearchMap from './assets/components/Nearby';
 import EmergencyAlert from './assets/components/Emergency';
 import SafeRouteHomePage from './assets/components/Home';
 import MapViewer from './assets/components/MapView';
-import MapWithDirectionPOI from './assets/components/path';
+import MapWithDirectionPOI from './assets/components/Path';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Leaderboard from './assets/components/Leaderboard';
 import SignIn from './assets/components/SignIn';
