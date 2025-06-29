@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
+
+
 const MapWithDirectionPOI = () => {
   const [xp, setXp] = useState(0);
   const [badges, setBadges] = useState([]);
   const [questStarted, setQuestStarted] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
-   const apiKey="d0660f3b-c47a-41b1-89c0-a01b596ebaf1";
+const apiKey = import.meta.env.VITE_API_KEY;
   const avatars = [
     { name: 'Ranger', emoji: '🧝‍♂️' },
     { name: 'Wizard', emoji: '🧙‍♀️' },

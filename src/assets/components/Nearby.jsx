@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 
+
+
 const NearbySearchMap = () => {
-  const token = "d0660f3b-c47a-41b1-89c0-a01b596ebaf1";
+  
+  const apiKey = import.meta.env.VITE_API_KEY;
   const [map, setMap] = useState(null);
   const [xp, setXp] = useState(0);
   const [badges, setBadges] = useState([]);
+  console.log(apiKey)
 
   useEffect(() => {
     const loadScript = (src) =>
@@ -18,10 +22,10 @@ const NearbySearchMap = () => {
 
     const initMap = async () => {
       await loadScript(
-        `https://apis.mappls.com/advancedmaps/api/${token}/map_sdk?layer=vector&v=3.0`
+        `https://apis.mappls.com/advancedmaps/api/${apiKey}/map_sdk?layer=vector&v=3.0`
       );
       await loadScript(
-        `https://apis.mappls.com/advancedmaps/api/${token}/map_sdk_plugins?v=3.0`
+        `https://apis.mappls.com/advancedmaps/api/${apiKey}/map_sdk_plugins?v=3.0`
       );
 
       const mapInstance = new window.mappls.Map("map", {
@@ -89,49 +93,28 @@ const NearbySearchMap = () => {
     initMap();
   }, []);
 
-  const xpLevel = Math.min(100, xp);
-  const xpColor = xpLevel < 30 ? "bg-sky-400" : xpLevel < 70 ? "bg-orange-400" : "bg-green-500";
-  const borderColor = xpLevel < 30 ? "border-sky-400" : xpLevel < 70 ? "border-orange-400" : "border-green-500";
-  const shadowColor = xpLevel < 30 ? "shadow-sky-400/50" : xpLevel < 70 ? "shadow-orange-400/50" : "shadow-green-500/50";
+  
 
-  return (
-    <div className="bg-gray-600 flex flex-wrap gap-5 p-5">
-      <div
+  
+    return (
+   <div className="min-h-screen w-full px-6 py-8 bg-gradient-to-tr from-[#667eea] via-[#764ba2] to-[#6b0f1a]
+ flex flex-wrap gap-6 justify-center items-start overflow-x-hidden transition-all duration-300">
+
+     <div
   id="nearby_search"
-  className="w-[300px] max-h-[80vh] rounded-xl shadow-xl p-4 backdrop-blur-md bg-gradient-to-br from-gray-400 gray-300-500 to-black-300 text-black border-2 border-white/30"
+  className="w-[300px] max-h-[80vh] rounded-xl shadow-xl p-4 backdrop-blur-md bg-gradient-to-br from-[#1e293b] to-[#0f172a] text-black border border-white/20 overflow-y-auto"
 ></div>
 
 
-      <div className="bg-gray-400 flex-1 rounded-xl overflow-hidden shadow-xl border-2 border-cyan-400 min-w-[300px] h-[80vh] relative">
+      {/* Map Container */}
+      <div className="bg-gray-800 flex-1 rounded-xl overflow-hidden shadow-xl border border-cyan-400 min-w-[300px] h-[80vh] relative">
         <div id="map" className="w-full h-full"></div>
       </div>
 
-      <div className={`absolute top-5 right-5 bg-black/60 backdrop-blur-lg p-5 rounded-xl text-white font-roboto w-72 z-50 border-2 ${borderColor} shadow-lg ${shadowColor}`}>
-        <h2 className="text-sm text-cyan-400 mb-4">🔍 NEARBY QUEST</h2>
-
-        <div className="bg-black rounded-md h-3 mb-3 shadow-inner">
-          <div className={`h-full rounded-md transition-all duration-300 ${xpColor}`} style={{ width: `${xpLevel}%` }}></div>
-        </div>
-
-        <p className="text-xs mb-4">
-          XP: <strong>{xp}</strong> / 100
-        </p>
-
-        {badges.length > 0 && (
-          <>
-            <p className="text-xs text-yellow-300 mb-1">🏆 Badges:</p>
-            <ul className="list-none p-0 m-0 flex flex-wrap gap-2">
-              {badges.map((badge, i) => (
-                <li key={i} className="text-xl bg-neutral-900 rounded-xl px-3 py-2 shadow-md border-2 border-cyan-400 text-white">
-                  {badge}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </div>
     </div>
   );
 };
+
+  
 
 export default NearbySearchMap;

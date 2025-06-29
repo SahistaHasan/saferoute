@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
+// at the top of your file
+
+
+
 
 const MapViewer = () => {
   const [source, setSource] = useState("28.6129,77.2295");
@@ -7,7 +11,7 @@ const MapViewer = () => {
   const [events, setEvents] = useState([]);
   const [xp, setXp] = useState(0);
   const [badge, setBadge] = useState("");
-  const apiKey = "d0660f3b-c47a-41b1-89c0-a01b596ebaf1";
+  const apiKey = import.meta.env.VITE_API_KEY;
 
   useEffect(() => {
     const fetchRouteData = async () => {
@@ -121,7 +125,7 @@ const MapViewer = () => {
   return (
     <div className="font-[Poppins]">
       <div className="p-4 bg-[#1e1e2f] text-white">
-        <h2 className="m-0 text-xl">🚀 SafeRoute XP Dashboard</h2>
+       
         <div className="flex flex-wrap gap-2 mt-2">
           <input
             type="text"
@@ -139,21 +143,9 @@ const MapViewer = () => {
           />
         </div>
 
-        <div className="mt-4">
-          <span className="font-bold">XP: {xp} / 100</span>
-          <div className="w-full max-w-[500px] bg-[#3d3d60] rounded-lg h-5 mt-1">
-            <div
-              className="bg-[#00e0ff] h-full rounded-lg transition-all duration-500 ease-in-out"
-              style={{ width: `${xp}%` }}
-            ></div>
-          </div>
-        </div>
+        
 
-        {badge && (
-          <div className="bg-yellow-400 text-black p-2 rounded-lg mt-4 shadow-md max-w-[250px] animate-pop">
-            🏆 New Badge Unlocked: <strong>{badge}</strong>
-          </div>
-        )}
+       
       </div>
 
       <div className="w-full h-screen">

@@ -1,13 +1,13 @@
+// ReportIncident.jsx
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { db } from "./Firebase";
+import { db, auth } from "./Firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { auth } from "./Firebase";
 
 const ReportIncident = () => {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
-  const apiKey="d0660f3b-c47a-41b1-89c0-a01b596ebaf1";
+  const apiKey = import.meta.env.VITE_API_KEY;
 
   useEffect(() => {
     initMap1();
@@ -15,90 +15,80 @@ const ReportIncident = () => {
 
   const initMap1 = () => {
     const script1 = document.createElement("script");
-    script1.src =
-      `https://apis.mappls.com/advancedmaps/api/${apiKey}/map_sdk?layer=vector&v=3.0&callback=initMap1`;
+    script1.src = `https://apis.mappls.com/advancedmaps/api/${apiKey}/map_sdk?layer=vector&v=3.0&callback=initMap1`;
     script1.async = true;
     document.body.appendChild(script1);
 
     const script2 = document.createElement("script");
-    script2.src =
-      `https://apis.mappls.com/advancedmaps/api/${apiKey}/map_sdk_plugins?v=3.0`;
+    script2.src = `https://apis.mappls.com/advancedmaps/api/${apiKey}/map_sdk_plugins?v=3.0`;
     script2.async = true;
     document.body.appendChild(script2);
 
     script1.onload = () => {
-      const map = new window.mappls.Map("map", {
-        center: [28.09, 78.3],
-        zoom: 5,
-      });
-
-      map.addListener("load", () => {
-        const optional_config = {
-          location: [28.61, 77.23],
-          geolocation: true,
-          region: "IND",
-          height: 250,
-          width: 400,
-        };
-
-        const searchInput = document.getElementById("auto");
-        new window.mappls.search(searchInput, optional_config, callback);
-
-        searchInput.addEventListener("focus", () => {
-          new window.mappls.search(searchInput, optional_config, callback);
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        const map = new window.mappls.Map("map", {
+          center: [latitude, longitude],
+          zoom: 14,
         });
 
-        function callback(data) {
-          if (data && data[0]) {
-            const dt = data[0];
-            const eloc = dt.eLoc;
-            const place = dt.placeName + ", " + dt.placeAddress;
+        map.addListener("load", () => {
+          setLocation(`${latitude}, ${longitude}`);
 
-            setLocation(place);
+          const optional_config = {
+            location: [latitude, longitude],
+            geolocation: true,
+            region: "IND",
+            height: 250,
+            width: 400,
+          };
 
-            window.mappls.pinMarker(
-              {
-                map,
-                pin: eloc,
-                popupHtml: place,
-                popupOptions: { openPopup: true },
-              },
-              (marker) => marker.fitbounds()
-            );
+          const searchInput = document.getElementById("auto");
+          new window.mappls.search(searchInput, optional_config, callback);
+
+          searchInput.addEventListener("focus", () => {
+            new window.mappls.search(searchInput, optional_config, callback);
+          });
+
+          function callback(data) {
+            if (data && data[0]) {
+              const dt = data[0];
+              const eloc = dt.eLoc;
+              const place = dt.placeName + ", " + dt.placeAddress;
+              setLocation(place);
+
+              window.mappls.pinMarker(
+                {
+                  map,
+                  pin: eloc,
+                  popupHtml: place,
+                  popupOptions: { openPopup: true },
+                },
+                (marker) => marker.fitbounds()
+              );
+            }
           }
-        }
+        });
       });
     };
   };
 
   const handleReportSubmit = async () => {
-    if (!description.trim()) {
-      alert("Please enter a description for the incident.");
+    if (!description.trim() || !location.trim()) {
+      alert("Please enter a description and select a location.");
       return;
     }
-  
+
     const currentUser = auth.currentUser;
     const userEmail = currentUser?.email || "Anonymous";
-  
-    // Format current date/time in IST
-    const timestamp = new Date().toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",
-      hour12: true,
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric"
-    });
-  
+
     const report = {
       description,
       location,
-      timestamp,
+      timestamp: serverTimestamp(),
       user: userEmail,
     };
-  
+
     try {
       await addDoc(collection(db, "incidents"), report);
       alert("Incident reported successfully!");
@@ -108,15 +98,11 @@ const ReportIncident = () => {
       alert("Error reporting incident.");
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-pink-400 text-white flex flex-col lg:flex-row items-center justify-center px-4 py-10 gap-10">
-      {/* Report Section */}
       <div className="w-full lg:w-1/2 max-w-xl bg-white/20 backdrop-blur-lg text-white p-8 rounded-3xl shadow-2xl mt-10">
-        <h1 className="text-4xl sm:text-5xl font-bold text-center mb-6">
-          🚨 Report Incident
-        </h1>
+        <h1 className="text-4xl sm:text-5xl font-bold text-center mb-6">🚨 Report Incident</h1>
 
         <textarea
           value={description}
@@ -140,7 +126,6 @@ const ReportIncident = () => {
         </div>
       </div>
 
-      {/* Map Search Section */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -181,5 +166,3 @@ const ReportIncident = () => {
 };
 
 export default ReportIncident;
-
-

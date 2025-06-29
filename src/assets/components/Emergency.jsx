@@ -17,7 +17,7 @@ const EmergencyAlert = () => {
             const lng = position.coords.longitude;
 
             try {
-              const apiKey = "d0660f3b-c47a-41b1-89c0-a01b596ebaf1";
+              const apiKey = import.meta.env.VITE_API_KEY
               const response = await fetch(
                 `https://apis.mapmyindia.com/advancedmaps/v1/${apiKey}/rev_geocode?lat=${lat}&lng=${lng}`
               );
