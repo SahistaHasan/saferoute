@@ -15,7 +15,7 @@ const SignIn = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       // Navigate to leaderboard after successful login
-      navigate("/leaderboard");
+      navigate("/");
     } catch (err) {
       // Log the error message
       console.error("Error signing in:", err.message);
