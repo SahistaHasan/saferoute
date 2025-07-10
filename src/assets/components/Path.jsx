@@ -41,38 +41,19 @@ const apiKey = import.meta.env.VITE_API_KEY;
           Profile: ['driving', 'biking', 'trucking', 'walking'],
           alongTheRoute: {
             poicallback: function (data) {
-              const gainedXP = (data?.length || 5) * 10;
-              setXp((prevXP) => {
-                const totalXP = prevXP + gainedXP;
-                updateBadges(totalXP);
-                return totalXP;
-              });
+              
+             
             }
           }
         };
 
         window.mappls.direction(direction_option, () => {
-          setXp((prevXP) => {
-            const totalXP = prevXP + 20;
-            updateBadges(totalXP);
-            return totalXP;
-          });
+         
         });
       });
     };
 
-    const updateBadges = (xpTotal) => {
-      const newBadges = [];
-      if (xpTotal >= 50 && !badges.includes('🏅 Explorer')) {
-        newBadges.push('🏅 Explorer');
-      }
-      if (xpTotal >= 100 && !badges.includes('🧭 Master Navigator')) {
-        newBadges.push('🧭 Master Navigator');
-      }
-      if (newBadges.length > 0) {
-        setBadges((prev) => [...new Set([...prev, ...newBadges])]);
-      }
-    };
+   
 
     document.body.appendChild(script1);
     document.body.appendChild(script2);
